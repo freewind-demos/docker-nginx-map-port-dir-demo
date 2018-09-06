@@ -45,3 +45,17 @@ docker run --name my-nginx -v (pwd)/local-site:/usr/share/nginx/html:ro -p 8080:
 如果是Mac，需要使用`docker-machine ip`命令拿到当前docker machine的ip后访问：
 
 ![demo](./images/demo.jpg)
+
+注意
+---
+
+关于`-v`，这里有一个很神奇的地方需要注意。
+
+`-v`是将宿主机上的某个目录或者文件，映射到docker container中。
+在Ubuntu下，这没有什么特别的；
+但是在Mac下，docker container并不是运行于Mac主机，而是一个docker machine的中间层Linux虚拟机上，
+而我们的参数`-v /some/content:/usr/share/nginx/html`，实际上是把Mac主机上的某个目录，越过真正的宿主机（中间层Linux），映射到了docker container上。
+看来是Mac下的docker做了特别处理。
+
+同时需要注意的是，对于端口映射`-p`，Mac上在docker似乎没有做特别处理，它只是把中间层Linux的端口与运行在其中的docker container的端口做了映射，而没有处理Mac主机，所以我们必须访问中间层Linux的ip和端口，才能得到正确回复。
+
